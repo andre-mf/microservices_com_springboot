@@ -3,26 +3,46 @@ package com.andre.serviceproduto.controller;
 import com.andre.serviceproduto.http.data.request.ProdutoPersistDto;
 import com.andre.serviceproduto.http.data.response.ProdutoResponseDto;
 import com.andre.serviceproduto.model.Produto;
-import com.andre.serviceproduto.service.ProdutoServiceImpl;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("produto")
-public class ProdutoController {
+import javax.validation.Valid;
 
-    private final ProdutoServiceImpl produtoService;
-
-    public ProdutoController(ProdutoServiceImpl produtoService) {
-        this.produtoService = produtoService;
-    }
+public interface ProdutoController {
 
     @PostMapping
-    public ProdutoResponseDto inserir(@RequestBody ProdutoPersistDto dto) {
-        Produto produto = new Produto(dto.getDescricao(), dto.getValor());
-        Produto produtoPersistido = produtoService.inserir(produto);
-        return new ProdutoResponseDto(produtoPersistido.getId(), produtoPersistido.getDescricao());
-    }
+    @ResponseStatus(HttpStatus.CREATED)
+    Produto inserir(@Valid @RequestBody ProdutoPersistDto dto);
+
+    @Operation(summary = "Retorna o produto correspondente ao identificador recuperado por parâmetro")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "404",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                                "codigo": "X_100",
+                                                "mensagem": "Produto de código X não encontrado",
+                                                "documentacao": null
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    @GetMapping("{id}")
+    Produto one(@PathVariable Long id);
+
+    @PatchMapping("{id}")
+    Produto update(@PathVariable("id") Long id, @RequestBody JsonPatch patch) throws JsonPatchException, JsonProcessingException;
 }

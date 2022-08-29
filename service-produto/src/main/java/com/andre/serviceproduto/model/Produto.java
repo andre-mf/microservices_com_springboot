@@ -1,6 +1,7 @@
 package com.andre.serviceproduto.model;
 
 import com.sun.istack.NotNull;
+import io.micrometer.core.lang.NonNull;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -15,12 +16,22 @@ public class Produto {
     private Long id;
 
     @Column(name = "DESCRICAO", length = 100, nullable = false)
-    private final String descricao;
+    private String descricao;
 
     @Column(name = "VALOR", nullable = false)
-    private final BigDecimal valor;
+    private BigDecimal valor;
+
+    @Deprecated
+    public Produto() {
+    }
 
     public Produto(@NotNull String descricao, @NotNull BigDecimal valor) {
+        this.descricao = Objects.requireNonNull(descricao);
+        this.valor = Objects.requireNonNull(valor);
+    }
+
+    public Produto(@NonNull Long id, @NotNull String descricao, @NotNull BigDecimal valor) {
+        this.id = Objects.requireNonNull(id);
         this.descricao = Objects.requireNonNull(descricao);
         this.valor = Objects.requireNonNull(valor);
     }

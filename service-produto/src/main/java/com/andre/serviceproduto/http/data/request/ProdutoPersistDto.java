@@ -1,12 +1,15 @@
 package com.andre.serviceproduto.http.data.request;
 
-import javax.persistence.Column;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class ProdutoPersistDto {
 
+    @NotEmpty
     private String descricao;
 
+    @NotNull
     private BigDecimal valor;
 
     public String getDescricao() {
