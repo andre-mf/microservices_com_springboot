@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.andre</groupId>
     <artifactId>service-produto</artifactId>
-    <version>1.0</version>
+    <version>15</version>
     <name>service-produto</name>
     <description>service-produto</description>
     <properties>
@@ -79,6 +79,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+            <version>3.1.4</version>
         </dependency>
     </dependencies>
     <dependencyManagement>
